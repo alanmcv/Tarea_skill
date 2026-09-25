@@ -18,6 +18,8 @@ coverage/
 reporte-bugs/
 reporte-antes/
 reporte-despues/
+reporte-fix/
+.rbh-backup/
 __pycache__/
 
 # Logs
@@ -32,7 +34,7 @@ pnpm-debug.log*
 !README.md
 !AGENTS.md
 # Los .md de la skill (SKILL.md, references/, plantillas) sí se versionan
-!skills/**/*.md
+!.claude/**/*.md
 
 # Operating system files
 .DS_Store

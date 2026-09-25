@@ -31,7 +31,7 @@ from report import (SEV_ORDER, compare, render_html,  # noqa: E402
 SKILL_DIR = Path(__file__).resolve().parent.parent
 ASSETS = SKILL_DIR / 'assets'
 IGNORED_DIRS = {'node_modules', 'dist', 'build', '.git', '.vite', 'coverage',
-                'dist-ssr', '.next', 'reporte-bugs', 'fixtures'}
+                'dist-ssr', '.next', 'reporte-bugs', 'reporte-fix', 'fixtures'}
 SOURCE_EXT = ('.js', '.jsx', '.ts', '.tsx', '.css')
 MAX_FILE_BYTES = 1_000_000
 
@@ -54,6 +54,18 @@ def c(text, code):
 
 
 SEV_COLOR = {'error': '31', 'warning': '33', 'info': '36'}
+
+
+def setup_console():
+    """En Windows la consola suele ser cp1252: forzamos UTF-8 para los
+    acentos y emojis, y activamos los colores ANSI."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding='utf-8', errors='replace')
+        except (AttributeError, ValueError):
+            pass
+    if os.name == 'nt':
+        os.system('')
 
 
 # ------------------------------------------------------------------- carga
@@ -98,10 +110,11 @@ def collect_files(root, warnings, exclude=()):
             if full.stat().st_size > MAX_FILE_BYTES:
                 warnings.append(f'Se omitió {rel}: supera 1 MB.')
                 continue
+            raw = full.read_bytes()  # bytes: conserva los finales CRLF
             try:
-                text = full.read_text(encoding='utf-8-sig')
+                text = raw.decode('utf-8-sig')
             except UnicodeDecodeError:
-                text = full.read_text(encoding='latin-1')
+                text = raw.decode('latin-1')
                 warnings.append(f'{rel} no es UTF-8; se leyó como latin-1.')
             files.append(SourceFile(rel, text))
     return files
@@ -272,6 +285,7 @@ def print_summary(data, written):
 
 
 def main(argv=None):
+    setup_console()
     parser = argparse.ArgumentParser(
         prog='audit.py',
         description='Audita un proyecto React + Vite en busca de errores de '

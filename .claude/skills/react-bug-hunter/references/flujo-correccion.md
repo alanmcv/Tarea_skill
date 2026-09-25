@@ -3,6 +3,12 @@
 Guía para el agente sobre **cómo corregir** los hallazgos y **cómo
 documentarlos**. Léela en el paso 4 del flujo de `SKILL.md`.
 
+## 0. Primero, la reparación automática
+
+`scripts/fix.py` repara solo la mayoría de los hallazgos (ver
+`reparaciones.md`). Esta guía aplica a los **pendientes manuales (✋)** y a
+explicar lo que hizo cada reparación.
+
 ## 1. Orden de corrección recomendado
 
 Corrige de más grave a menos grave y agrupa lo que comparte causa:
@@ -14,6 +20,7 @@ Corrige de más grave a menos grave y agrupa lo que comparte causa:
 
 ## 2. Reglas para cada corrección
 
+- Si `fix.py` puede repararlo, úsalo (deja copia de seguridad y verifica).
 - Un cambio por hallazgo; no reescribas archivos completos.
 - Respeta el estilo del proyecto (en este repo: 2 espacios, comillas
   simples, sin punto y coma; ver `AGENTS.md`).
@@ -56,8 +63,9 @@ una corrección introdujo otro problema: revísala antes de seguir.
 
 ## 5. Formato de entrega (por cada error)
 
-El `reporte.md` ya trae un bloque por hallazgo con esta estructura. Pide al
-usuario que lo complete con lo que realmente hizo:
+`reporte-fix/ENTREGA.md` (de `fix.py`) ya trae un bloque por error con esta
+estructura **más el diff antes/después**; `reporte.md` (de `audit.py`) trae
+lo mismo sin diff. Pide al usuario que lo complete con lo que realmente hizo:
 
 ```markdown
 ### Error N: <título>

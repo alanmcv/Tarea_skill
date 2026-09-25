@@ -23,3 +23,27 @@ Abre la dirección que muestra la terminal (normalmente http://localhost:5173).
    - El prompt que usaste con la IA y si tuviste que corregirlo.
 
 Los datos vienen de https://dummyjson.com/products
+
+---
+
+## 🔎🛠 Skill: `react-bug-hunter`
+
+Este repositorio incluye una skill para **Claude Code** que detecta **y repara
+automáticamente** los errores de esta tienda (y de cualquier app React + Vite).
+Hace una copia de seguridad antes de cambiar nada, verifica cada cambio, ejecuta
+`npm run build` y genera el documento de entrega.
+
+- Ubicación: [`.claude/skills/react-bug-hunter/`](.claude/skills/react-bug-hunter/)
+- Documentación completa: [`README de la skill`](.claude/skills/react-bug-hunter/README.md)
+- Capturas: [`evidencias/`](.claude/skills/react-bug-hunter/evidencias/)
+
+**Uso rápido en VS Code:** abre esta carpeta, abre el chat de Claude Code y escribe:
+
+```
+/react-bug-hunter            → auditar y explicar
+/react-bug-hunter reparar    → reparar todo (backup + build + ENTREGA.md)
+/react-bug-hunter deshacer   → volver al estado original
+/react-bug-hunter demo       → demostración completa
+```
+
+Requisito: Python 3.8+ (sin dependencias extra).
