@@ -230,7 +230,7 @@ Ejemplo de un bloque de `ENTREGA.md`:
 ```bash
 cd .claude/skills/react-bug-hunter
 python3 -m unittest discover -s tests -v    # 29 pruebas
-python3 scripts/demo.py                     # demo completa (añade --pausa para presentar)
+python3 scripts/demo.py                     # demo completa (añade --pausa para ir paso a paso)
 ```
 
 **Pruebas (29):**
@@ -311,17 +311,3 @@ Para regenerarlas hace falta Chromium o Chrome:
 6. **Contraste WCAG calculado de verdad.** C03 usa la luminancia relativa oficial. Por eso detectó que `#fff` sobre `#4a90d9` (3.34:1) tampoco cumple, y el reparador oscurece el fondo manteniendo el tono hasta superar 4.5:1.
 7. **Líneas originales en la entrega.** Aunque las reparaciones desplazan líneas, `ENTREGA.md` muestra la línea y el código **originales** de cada error, que es lo que pide el ejercicio.
 8. **Respeta tu código.** Mantiene la indentación y los finales de línea CRLF/LF, y no reformatea archivos completos.
-
----
-
-## 10. Guion sugerido para la presentación (5 min)
-
-1. **Problema (30 s).** Depurar una app con 10 errores ocultos y documentarlos a mano es lento.
-2. **Estructura (1 min).** Mostrar el `SKILL.md`: la `description` (cuándo se activa), el `argument-hint` y los 4 modos. Después, qué va en `scripts/`, `assets/` y `references/`.
-3. **Demo en VS Code (2 min).**
-   - Escribir `/react-bug-hunter`: la tabla de 13 hallazgos.
-   - Escribir `/react-bug-hunter reparar`: 13/13, build ✅. Abrir `reporte-fix/fix.html` y `ENTREGA.md`.
-   - Ejecutar `npm run dev` para mostrar la tienda funcionando.
-   - Escribir `/react-bug-hunter deshacer`: la tienda vuelve a tener errores.
-4. **Errores (1 min).** Ejecutar `/react-bug-hunter demo` o `python3 scripts/demo.py --pausa` y mostrar las entradas inválidas y la tabla final 11/11.
-5. **Decisiones (30 s).** Verificación por cambio, tres redes de seguridad y ninguna dependencia.
