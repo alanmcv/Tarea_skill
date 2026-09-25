@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reparaciones · {{PROYECTO}}</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --text: #1d2330; --muted: #5d6675;
+    --line: #e1e4ea; --good: #2e7d32; --bad: #c62828; --accent: #3949ab;
+    --code: #0f1320; --code-text: #d7dae0; --add: #1f3d2a; --add-text: #9be9a8;
+    --del: #45202a; --del-text: #ffb4b4; --hunk: #8c9eff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #12151c; --panel: #1b1f29; --text: #e7e9ee; --muted: #9aa3b2;
+      --line: #2c3240; --good: #6cc36f; --bad: #ef6b6b; --accent: #8c9eff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 4px; font-size: 26px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .hero { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px;
+    align-items: center; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px; }
+  .hero .s { text-align: center; }
+  .hero b { display: block; font-size: 52px; line-height: 1; }
+  .hero .before b { color: var(--bad); } .hero .after b { color: var(--good); }
+  .hero span { color: var(--muted); font-size: 13px; }
+  .arrow { font-size: 36px; color: var(--muted); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin: 14px 0 24px; }
+  .stats div { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px; color: var(--muted); font-size: 13px; }
+  .stats b { display: block; font-size: 20px; color: var(--text); }
+  .fix { background: var(--panel); border: 1px solid var(--line);
+    border-left: 5px solid var(--good); border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 14px; }
+  .fix header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .fix h3 { margin: 0; font-size: 17px; flex: 1; min-width: 180px; }
+  .num { background: var(--line); border-radius: 6px; padding: 0 8px; font-weight: 700; }
+  .rule { font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--accent);
+    font-weight: 700; }
+  .cat { font-size: 12px; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 999px; padding: 1px 10px; }
+  .loc { margin: 6px 0; color: var(--muted); }
+  .why { margin: 6px 0 10px; }
+  code, .diff { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+  .diff { background: var(--code); color: var(--code-text); border-radius: 8px;
+    padding: 10px 0; overflow-x: auto; margin: 0; }
+  .diff span { display: block; padding: 0 12px; white-space: pre; }
+  .diff .add { background: var(--add); color: var(--add-text); }
+  .diff .del { background: var(--del); color: var(--del-text); }
+  .diff .hunk { color: var(--hunk); }
+  .pending { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 16px; }
+  .pending li { margin: 4px 0; }
+  @media (max-width: 640px) { .hero b { font-size: 40px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🛠 Reparaciones automáticas · {{PROYECTO}}</h1>
+  <p class="sub">react-bug-hunter · {{FECHA}} · modo: <b>{{MODO}}</b></p>
+
+  <div class="hero">
+    <div class="s before"><b>{{ANTES}}</b><span>puntaje antes</span></div>
+    <div class="arrow">→</div>
+    <div class="s after"><b>{{DESPUES}}</b><span>puntaje después</span></div>
+  </div>
+
+  <div class="stats">
+    <div><b>{{APLICADAS}}</b>errores reparados</div>
+    <div><b>{{MANUALES}}</b>pendientes manuales</div>
+    <div><b>{{ARCHIVOS}}</b>archivos modificados</div>
+    <div><b>{{BUILD}}</b>build</div>
+  </div>
+
+  <h2>Cambios aplicados</h2>
+{{TARJETAS}}
+
+  <h2>Pendientes de revisión manual</h2>
+  <ul class="pending">{{PENDIENTES}}</ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,164 @@
+{
+  "version": "1.0.0",
+  "severidades": {
+    "error": { "etiqueta": "Error", "penalizacion": 7 },
+    "warning": { "etiqueta": "Advertencia", "penalizacion": 3 },
+    "info": { "etiqueta": "Sugerencia", "penalizacion": 1 }
+  },
+  "reglas": [
+    {
+      "id": "R01",
+      "titulo": "Mutación directa del estado",
+      "severidad": "error",
+      "categoria": "logica",
+      "sintoma": "Se hace clic (por ejemplo en «Agregar») y la interfaz no cambia hasta que otra acción fuerza un re-render.",
+      "causa": "Se modifica el arreglo u objeto guardado en useState (push, splice, asignación directa). React compara referencias y no detecta el cambio.",
+      "correccion": "Crear una copia nueva: setX(prev => [...prev, nuevo]) o prev.map(...). Si el elemento ya existe, incrementar su cantidad en vez de duplicarlo.",
+      "prompt": "En {archivo} línea {linea} tengo `{codigo}`. Explícame por qué mutar el estado de React impide el re-render y reescribe la función de forma inmutable, sumando la cantidad si el producto ya existe.",
+      "referencia": "r01-mutacion-directa-del-estado"
+    },
+    {
+      "id": "R02",
+      "titulo": "setState con la misma referencia",
+      "severidad": "error",
+      "categoria": "logica",
+      "sintoma": "El setter se llama pero el componente no se vuelve a dibujar.",
+      "causa": "Se pasa al setter la misma variable de estado (setX(x)). Object.is(x, x) es true y React descarta la actualización.",
+      "correccion": "Pasar siempre un valor nuevo: setX([...x]) o, mejor, la forma funcional setX(prev => ...).",
+      "prompt": "En {archivo} línea {linea} hago `{codigo}`. ¿Por qué React ignora esta actualización? Dame la versión correcta usando la forma funcional del setter.",
+      "referencia": "r02-setstate-con-la-misma-referencia"
+    },
+    {
+      "id": "R03",
+      "titulo": "Cantidad sin límite inferior",
+      "severidad": "error",
+      "categoria": "logica",
+      "sintoma": "Al pulsar «-» varias veces la cantidad llega a 0 o a números negativos y el total baja de forma absurda.",
+      "causa": "Se suma un delta (positivo o negativo) a la cantidad sin validar que el resultado sea al menos 1.",
+      "correccion": "Limitar con Math.max(1, cantidad + delta) o eliminar el producto cuando la cantidad llegue a 0.",
+      "prompt": "En {archivo} línea {linea} (`{codigo}`) la cantidad puede quedar negativa. Corrige la función para que nunca baje de 1 (o elimine el ítem en 0) sin mutar el estado.",
+      "referencia": "r03-cantidad-sin-limite-inferior"
+    },
+    {
+      "id": "R04",
+      "titulo": "Eliminación por campo no único",
+      "severidad": "error",
+      "categoria": "logica",
+      "sintoma": "Al eliminar un producto desaparecen también otros productos que comparten el mismo valor (por ejemplo la misma categoría).",
+      "causa": "El filter compara un campo que no identifica de forma única al elemento (category, title, price...) en vez de su id.",
+      "correccion": "Filtrar por un identificador único: items.filter(c => c.id !== item.id).",
+      "prompt": "En {archivo} línea {linea} tengo `{codigo}` y al borrar un producto se borran varios. Explica la causa y corrígelo usando un identificador único.",
+      "referencia": "r04-eliminacion-por-campo-no-unico"
+    },
+    {
+      "id": "R05",
+      "titulo": "Porcentaje usado como monto",
+      "severidad": "error",
+      "categoria": "datos-api",
+      "sintoma": "El total no coincide con la suma de los precios mostrados (queda unos dólares por debajo de lo esperado).",
+      "causa": "Se resta un porcentaje (ej. discountPercentage = 12.5) como si fuera dinero: price - 12.5 en vez de price * (1 - 12.5 / 100).",
+      "correccion": "Convertir el porcentaje: price * (1 - pct / 100), o no aplicar descuento si la UI muestra el precio original.",
+      "prompt": "En {archivo} línea {linea} calculo `{codigo}`. El campo es un porcentaje según la API. Corrige la fórmula del total y dime cómo comprobarlo a mano con dos productos.",
+      "referencia": "r05-porcentaje-usado-como-monto"
+    },
+    {
+      "id": "R06",
+      "titulo": "Búsqueda sensible a mayúsculas",
+      "severidad": "warning",
+      "categoria": "logica",
+      "sintoma": "Buscar «phone» no muestra «iPhone» o «Phone», aunque la API sí los devolvió.",
+      "causa": "String.includes distingue mayúsculas de minúsculas y el texto del usuario no se normaliza.",
+      "correccion": "Normalizar ambos lados: titulo.toLowerCase().includes(busqueda.trim().toLowerCase()), o eliminar el filtro local si la API ya filtra.",
+      "prompt": "En {archivo} línea {linea} (`{codigo}`) la búsqueda falla con mayúsculas. Corrígela para que no distinga mayúsculas ni espacios al inicio/fin.",
+      "referencia": "r06-busqueda-sensible-a-mayusculas"
+    },
+    {
+      "id": "R07",
+      "titulo": "fetch sin manejo de errores",
+      "severidad": "error",
+      "categoria": "datos-api",
+      "sintoma": "Si la API falla o no hay internet, la pantalla se queda en «Cargando...» para siempre o se rompe con un error en consola.",
+      "causa": "La cadena de fetch no tiene .catch ni try/catch, así que el estado de carga nunca se apaga y no se informa el error.",
+      "correccion": "Agregar .catch(err => setError(err.message)) y .finally(() => setLoading(false)), y mostrar un mensaje de error en la UI.",
+      "prompt": "En {archivo} línea {linea} tengo `{codigo}` sin manejo de errores. Agrega estado de error, .catch y .finally para que la carga termine siempre y se muestre un mensaje.",
+      "referencia": "r07-fetch-sin-manejo-de-errores"
+    },
+    {
+      "id": "R08",
+      "titulo": "Respuesta HTTP sin verificar",
+      "severidad": "warning",
+      "categoria": "datos-api",
+      "sintoma": "Con una respuesta 404/500 la app intenta leer datos inexistentes (data.products es undefined) y falla al hacer .filter.",
+      "causa": "fetch solo rechaza por errores de red; un 404 o 500 llega como respuesta «exitosa» si no se revisa res.ok.",
+      "correccion": "if (!res.ok) throw new Error(`HTTP ${res.status}`) antes de res.json(), y usar data.products ?? [].",
+      "prompt": "En {archivo} línea {linea} (`{codigo}`) no reviso res.ok. Modifica la cadena para lanzar un error con el código HTTP y protegerme de datos vacíos.",
+      "referencia": "r08-respuesta-http-sin-verificar"
+    },
+    {
+      "id": "R09",
+      "titulo": "Efecto con fetch sin cancelación",
+      "severidad": "warning",
+      "categoria": "datos-api",
+      "sintoma": "Al escribir rápido en el buscador, a veces aparecen resultados de una búsqueda anterior.",
+      "causa": "Cada tecla lanza un fetch; si una respuesta vieja llega después de una nueva, sobrescribe el estado (condición de carrera).",
+      "correccion": "Usar AbortController en el useEffect y abortar en la función de limpieza: return () => controller.abort().",
+      "prompt": "En {archivo} línea {linea} (`{codigo}`) el useEffect no cancela peticiones anteriores. Agrega AbortController y la función de limpieza, ignorando el AbortError.",
+      "referencia": "r09-efecto-con-fetch-sin-cancelacion"
+    },
+    {
+      "id": "R10",
+      "titulo": "key con el índice del arreglo",
+      "severidad": "warning",
+      "categoria": "logica",
+      "sintoma": "Al eliminar o reordenar elementos, los inputs o cantidades aparecen en la fila equivocada.",
+      "causa": "Usar el índice como key hace que React reutilice nodos incorrectos cuando cambia el orden.",
+      "correccion": "Usar un identificador estable: key={item.id}.",
+      "prompt": "En {archivo} línea {linea} uso `{codigo}`. Explica por qué el índice es mala key y reemplázalo por un id estable.",
+      "referencia": "r10-key-con-el-indice-del-arreglo"
+    },
+    {
+      "id": "C01",
+      "titulo": "z-index negativo en panel posicionado",
+      "severidad": "error",
+      "categoria": "visual",
+      "sintoma": "Se pulsa el botón del carrito y el panel no aparece (queda escondido detrás del contenido).",
+      "causa": "Un elemento con position fixed/absolute tiene z-index negativo, por lo que se pinta debajo del resto de la página.",
+      "correccion": "Usar un z-index positivo mayor que el del contenido (por ejemplo 10 o 100).",
+      "prompt": "En {archivo} línea {linea} tengo `{codigo}` en un panel fijo que no se ve. Explica el apilamiento (stacking context) y dame el valor correcto.",
+      "referencia": "c01-z-index-negativo-en-panel-posicionado"
+    },
+    {
+      "id": "C02",
+      "titulo": "Imagen con ancho fijo que desborda",
+      "severidad": "error",
+      "categoria": "visual",
+      "sintoma": "Las imágenes se salen de las tarjetas o se superponen con la tarjeta vecina en pantallas pequeñas.",
+      "causa": "La imagen tiene un ancho fijo en px mayor que el ancho mínimo de la columna que la contiene.",
+      "correccion": "Usar width: 100% (o max-width: 100%) con height fijo y object-fit: contain.",
+      "prompt": "En {archivo} línea {linea} (`{codigo}`) la imagen desborda la tarjeta de la grid. Corrige el CSS para que sea responsiva sin deformarse.",
+      "referencia": "c02-imagen-con-ancho-fijo-que-desborda"
+    },
+    {
+      "id": "C03",
+      "titulo": "Contraste de texto insuficiente",
+      "severidad": "error",
+      "categoria": "visual",
+      "sintoma": "El texto de un botón o etiqueta casi no se lee porque su color es muy parecido al fondo.",
+      "causa": "La relación de contraste entre color y background está por debajo de 4.5:1 (WCAG AA).",
+      "correccion": "Elegir un color de texto que llegue al menos a 4.5:1, por ejemplo #fff sobre fondos oscuros o #111 sobre fondos claros.",
+      "prompt": "En {archivo} línea {linea} (`{codigo}`) el texto no se lee. Propón un color que cumpla WCAG AA (4.5:1) manteniendo el estilo del botón.",
+      "referencia": "c03-contraste-de-texto-insuficiente"
+    },
+    {
+      "id": "H01",
+      "titulo": "Falta meta viewport",
+      "severidad": "warning",
+      "categoria": "visual",
+      "sintoma": "En el celular la página se ve diminuta, como una versión de escritorio reducida.",
+      "causa": "index.html no declara <meta name=\"viewport\">, así que el navegador móvil simula un ancho de ~980px.",
+      "correccion": "Agregar <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /> dentro de <head>.",
+      "prompt": "Mi {archivo} no tiene meta viewport y en móvil se ve pequeño. Explica qué hace esa etiqueta y agrégala correctamente.",
+      "referencia": "h01-falta-meta-viewport"
+    }
+  ]
+}

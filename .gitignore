@@ -14,6 +14,14 @@ coverage/
 !.env.example
 !.env.sample
 
+# Reportes generados por react-bug-hunter y caches de Python
+reporte-bugs/
+reporte-antes/
+reporte-despues/
+reporte-fix/
+.rbh-backup/
+__pycache__/
+
 # Logs
 *.log
 npm-debug.log*
@@ -25,6 +33,8 @@ pnpm-debug.log*
 *.md
 !README.md
 !AGENTS.md
+# Los .md de la skill (SKILL.md, references/, plantillas) sí se versionan
+!.claude/**/*.md
 
 # Operating system files
 .DS_Store

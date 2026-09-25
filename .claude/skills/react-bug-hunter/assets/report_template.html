@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reporte de errores · {{PROYECTO}}</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --text: #1d2330; --muted: #5d6675;
+    --line: #e1e4ea; --error: #c62828; --warning: #b26a00; --info: #1565c0;
+    --good: #2e7d32; --accent: #3949ab; --code: #f0f2f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151c; --panel: #1b1f29; --text: #e7e9ee; --muted: #9aa3b2;
+      --line: #2c3240; --error: #ef6b6b; --warning: #f0a93b; --info: #64a8f5;
+      --good: #6cc36f; --accent: #8c9eff; --code: #242a36;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 4px; font-size: 26px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .top { display: grid; grid-template-columns: 160px 1fr; gap: 16px; }
+  .score { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; display: grid; place-items: center; padding: 16px; }
+  .score b { font-size: 44px; line-height: 1; }
+  .score.good b { color: var(--good); } .score.mid b { color: var(--warning); }
+  .score.bad b { color: var(--error); }
+  .score span { color: var(--muted); font-size: 13px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px; }
+  .stats div { background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px; color: var(--muted); font-size: 13px; }
+  .stats b { display: block; font-size: 24px; color: var(--text); }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 12px; }
+  .filters button { border: 1px solid var(--line); background: var(--panel);
+    color: var(--text); border-radius: 999px; padding: 6px 14px; cursor: pointer;
+    font: inherit; }
+  .filters button.on { background: var(--accent); border-color: var(--accent);
+    color: #fff; }
+  .finding { background: var(--panel); border: 1px solid var(--line);
+    border-left: 5px solid var(--info); border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 12px; }
+  .finding.sev-error { border-left-color: var(--error); }
+  .finding.sev-warning { border-left-color: var(--warning); }
+  .finding header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .finding h3 { margin: 0; font-size: 17px; flex: 1; min-width: 180px; }
+  .num { background: var(--code); border-radius: 6px; padding: 0 8px;
+    font-weight: 700; }
+  .rule { font-family: ui-monospace, Menlo, Consolas, monospace;
+    color: var(--accent); font-weight: 700; }
+  .badge { font-size: 12px; border-radius: 999px; padding: 2px 10px;
+    color: #fff; background: var(--info); }
+  .sev-error .badge { background: var(--error); }
+  .sev-warning .badge { background: var(--warning); }
+  .loc { margin: 6px 0; color: var(--muted); }
+  pre { background: var(--code); border-radius: 8px; padding: 10px;
+    overflow-x: auto; margin: 8px 0; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+  dl { display: grid; grid-template-columns: 130px 1fr; gap: 6px 12px; margin: 8px 0 0; }
+  dt { color: var(--muted); font-weight: 600; }
+  dd { margin: 0; }
+  .prompt { font-style: italic; }
+  .compare { margin-top: 20px; }
+  .compare h2 { font-size: 18px; }
+  .compare ul { padding-left: 18px; }
+  .empty { font-size: 18px; }
+  @media (max-width: 640px) {
+    .top { grid-template-columns: 1fr; }
+    dl { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔎 Reporte de errores · {{PROYECTO}}</h1>
+  <p class="sub">react-bug-hunter · {{FECHA}} · {{ARCHIVOS}} archivos analizados</p>
+
+  <div class="top">
+    <div class="score {{PUNTAJE_CLASE}}"><b>{{PUNTAJE}}</b><span>puntaje / 100</span></div>
+    <div class="stats">
+      <div><b>{{TOTAL}}</b>hallazgos</div>
+      <div><b>{{ERRORES}}</b>errores</div>
+      <div><b>{{ADVERTENCIAS}}</b>advertencias</div>
+      <div><b>{{LOGICA}}</b>lógica</div>
+      <div><b>{{DATOS}}</b>datos / API</div>
+      <div><b>{{VISUAL}}</b>visuales</div>
+    </div>
+  </div>
+
+  {{COMPARACION}}
+
+  <div class="filters" role="group" aria-label="Filtrar por categoría">
+    <button class="on" data-f="all">Todos</button>
+    <button data-f="logica">Lógica</button>
+    <button data-f="datos-api">Datos / API</button>
+    <button data-f="visual">Visual</button>
+  </div>
+
+  <section id="list">
+{{HALLAZGOS}}
+  </section>
+</div>
+<script>
+  document.querySelectorAll('.filters button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filters button').forEach(function (b) {
+        b.classList.toggle('on', b === btn)
+      })
+      var f = btn.dataset.f
+      document.querySelectorAll('.finding').forEach(function (card) {
+        card.style.display = f === 'all' || card.dataset.cat === f ? '' : 'none'
+      })
+    })
+  })
+</script>
+</body>
+</html>
